@@ -56,6 +56,7 @@ public:
 
 // Implementation
 public:
+	void ClearScreen();
 	void FILLANYTHING(UINT nFlags,CPoint point);
 	void PatternFill(CDC *pDC, int x, int y);
 	void OnRButtonDblClk(UINT nFlags, CPoint point);
@@ -88,6 +89,7 @@ protected:
 	afx_msg void OnCircle();
 	afx_msg void OnTianchong();
 	afx_msg void OnEllipse();
+	afx_msg void OnAllclear();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

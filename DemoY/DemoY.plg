@@ -6,6 +6,34 @@
 --------------------Configuration: DemoY - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
+Creating temporary file "C:\Users\Nandina\AppData\Local\Temp\RSPEFC7.tmp" with contents
+[
+/nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Debug/DemoY.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"\\Mac\Home\Desktop\新建文件夹\DemoY\DemoYView.cpp"
+]
+Creating command line "cl.exe @C:\Users\Nandina\AppData\Local\Temp\RSPEFC7.tmp" 
+Creating temporary file "C:\Users\Nandina\AppData\Local\Temp\RSPEFC8.tmp" with contents
+[
+/nologo /subsystem:windows /incremental:yes /pdb:"Debug/DemoY.pdb" /debug /machine:I386 /out:"Debug/DemoY.exe" /pdbtype:sept 
+".\Debug\DemoY.obj"
+".\Debug\DemoYDoc.obj"
+".\Debug\DemoYView.obj"
+".\Debug\Graphics.obj"
+".\Debug\MainFrm.obj"
+".\Debug\MapObj.obj"
+".\Debug\SetColor.obj"
+".\Debug\SetWidth.obj"
+".\Debug\StdAfx.obj"
+".\Debug\DemoY.res"
+]
+Creating command line "link.exe @C:\Users\Nandina\AppData\Local\Temp\RSPEFC8.tmp"
+<h3>Output Window</h3>
+Compiling...
+DemoYView.cpp
+\\Mac\Home\Desktop\新建文件夹\DemoY\DemoYView.cpp(585) : warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+\\Mac\Home\Desktop\新建文件夹\DemoY\DemoYView.cpp(621) : warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+\\Mac\Home\Desktop\新建文件夹\DemoY\DemoYView.cpp(622) : warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+Linking...
 
 
 

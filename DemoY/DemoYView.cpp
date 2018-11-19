@@ -37,6 +37,7 @@ BEGIN_MESSAGE_MAP(CDemoYView, CView)
 	ON_COMMAND(ID_CIRCLE, OnCircle)
 	ON_COMMAND(ID_TIANCHONG, OnTianchong)
 	ON_COMMAND(ID_ELLIPSE, OnEllipse)
+	ON_COMMAND(ID_ALLCLEAR, OnAllclear)
 	//}}AFX_MSG_MAP
 	// Standard printing commands
 	ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
@@ -216,12 +217,18 @@ CDemoYDoc* CDemoYView::GetDocument() // non-debug version is inline
 
 /////////////////////////////////////////////////////////////////////////////
 // CDemoYView message handlers
-
+void CDemoYView::OnAllclear() 
+{
+	// TODO: Add your command handler code here
+	type = 0;
+	ClearScreen();
+}
 void CDemoYView::OnLine() 
 {
 	// TODO: Add your command handler code here
 	//2
-	type = 1;	
+	type = 1;
+	
 }
 
 void CDemoYView::OnPolygon() 
@@ -251,29 +258,26 @@ void CDemoYView::OnLButtonDown(UINT nFlags, CPoint point)
 		m_EndPoint = point;
 		m_LButtonDown = true;//设置鼠标左键按下
 		pointList.Add(point);
+		//ClearScreen();
 	}
+//	else if(type ==0 ){
+		/*
+		this->SetCapture();//捕捉鼠标
+		//设置开始点和终止点，此时为同一点
+		m_StartPoint = point;
+		m_EndPoint = point;
+		m_LButtonDown = true;//设置鼠标左键按下
+		pointList.Add(point);
+		*/
+		//ClearScreen();
+//	}
 	
 	CView::OnLButtonDown(nFlags, point);
 }
 
 void CDemoYView::OnMouseMove(UINT nFlags, CPoint point) 
 {
-	// TODO: Add your message handler code here and/or call default
-	/*
-	//1
-	if (m_LButtonDown){
-		CDC* pDC = this->GetDC();//构造设备环境对象
-		pDC->SetROP2(R2_NOT);//设置绘图模式为R2_NOT
-		//重新绘制前一个鼠标移动消息处理函数绘制的直线段
-		//因为绘图模式的原因，结果就是擦除了该线段
-		DDALine(pDC,m_StartPoint.x,m_StartPoint.y,m_EndPoint.x,m_EndPoint.y,RGB(0,0,0));
-		//绘制新的直线段
-		DDALine(pDC,m_StartPoint.x,m_StartPoint.y,point.x,point.y,RGB(0,0,0));
-		//保存新的直线段终点
-		m_EndPoint = point;
-	}
-	*/
-	//2
+	
 	if ((m_LButtonDown && type == 1) || (type == 2 && pointList.GetSize() != 0)){
 		CDC* pDC = this->GetDC();//构造设备环境对象
 		pDC->SetROP2(R2_NOT);//设置绘图模式为R2_NOT
@@ -310,40 +314,17 @@ void CDemoYView::OnMouseMove(UINT nFlags, CPoint point)
 		//保存新的直线段终点
 		m_EndPoint = point;
 	}
+	else if (type==0&&m_LButtonDown)
+	{
+			CDC*pDC=this->GetDC();
+		pDC->SetROP2(R2_NOT);
+		ClearScreen();
+	}
 	CView::OnMouseMove(nFlags, point);
 }
 
 void CDemoYView::OnLButtonUp(UINT nFlags, CPoint point) 
 {
-	// TODO: Add your message handler code here and/or call default
-	/*
-	//1
-	ReleaseCapture();//释放鼠标
-	m_LButtonDown = false;	
-	*/
-	/*
-	//2
-	if (type == 1){
-		ReleaseCapture();//释放鼠标
-		pointList.RemoveAll();
-	}
-	m_LButtonDown = false;	
-	*/
-
-	/*
-	//3
-	if (type == 1){
-		ReleaseCapture();//释放鼠标
-		MapObj* obj = new MapObj();
-		obj->type = 1;
-		obj->points.Add(m_StartPoint);
-		obj->points.Add(m_EndPoint);
-		objList.Add(obj);
-		pointList.RemoveAll();
-	}
-	m_LButtonDown = false;
-	*/
-
 	//4
 	if (type == 1){
 		ReleaseCapture();//释放鼠标
@@ -356,7 +337,7 @@ void CDemoYView::OnLButtonUp(UINT nFlags, CPoint point)
 		CDC* dc = this->GetDC();
 		DDALine(dc,m_StartPoint.x,m_StartPoint.y,m_EndPoint.x,m_EndPoint.y,RGB(r,g,b));
 	}
-	else if(type==3||type==4)
+	else if(type==3||type==4||type==0)
 	{
 		ReleaseCapture();//释放鼠标
 		MapObj* obj = new MapObj();
@@ -573,28 +554,7 @@ void CDemoYView::DDALine(CDC *pDC, int x1, int y1, int x2, int y2, COLORREF colo
 		y+=dy;
 	}
 }
-/*
-void CDemoYView::TianChong(PointArray& ptArray,COLORREF color)
-{
-	
-}
 
-void CDemoYView::PatternFill()
-{
-
-}
-
-void CDemoYView::EdgeMarkFill(PointArray &ptArray, COLORREF color)
-{
-	for(y=y1;y<=y2;y++)
-		{
-			for(x=x1;x<=x2;x++)
-			{
-				MASK[y][x] = false;
-			}
-		}_
-}
-*/
 
 void CDemoYView::OnCircle() 
 {
@@ -874,3 +834,17 @@ void CDemoYView::FILLANYTHING(UINT nFlags, CPoint point)
 			pointList.RemoveAll();
 		}
 }}
+
+void CDemoYView::ClearScreen()
+{
+	CClientDC dc(this);
+	CRect window;
+	GetClientRect(window);
+	dc.SelectStockObject(WHITE_PEN);
+	dc.SelectStockObject(WHITE_BRUSH);
+	dc.Rectangle(window);
+	//Invalidate(TRUE);
+
+}
+
+

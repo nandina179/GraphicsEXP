@@ -15,11 +15,11 @@ Class3=CDemoYView
 Class4=CMainFrame
 
 ResourceCount=4
-Resource1=IDD_DIALOG1
+Resource1=IDD_ABOUTBOX
 Class5=CAboutDlg
-Resource2=IDR_MAINFRAME
+Resource2=IDD_DIALOG1
 Class6=SetWidth
-Resource3=IDD_ABOUTBOX
+Resource3=IDR_MAINFRAME
 Class7=SetColor
 Resource4=IDD_SETCOLOR
 
@@ -42,7 +42,7 @@ ImplementationFile=DemoYView.cpp
 Filter=C
 BaseClass=CView
 VirtualFilter=VWC
-LastObject=ID_EDIT_PASTE
+LastObject=ID_APP_EXIT
 
 
 [CLS:CMainFrame]
@@ -52,7 +52,7 @@ ImplementationFile=MainFrm.cpp
 Filter=T
 BaseClass=CFrameWnd
 VirtualFilter=fWC
-LastObject=ID_TIANCHONG
+LastObject=ID_ALLCLEAR
 
 
 
@@ -130,7 +130,8 @@ Command10=ID_POLYGON
 Command11=ID_CIRCLE
 Command12=ID_ELLIPSE
 Command13=ID_TIANCHONG
-CommandCount=13
+Command14=ID_ALLCLEAR
+CommandCount=14
 
 [DLG:IDD_DIALOG1]
 Type=1
