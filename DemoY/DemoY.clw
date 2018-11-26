@@ -15,11 +15,11 @@ Class3=CDemoYView
 Class4=CMainFrame
 
 ResourceCount=4
-Resource1=IDD_ABOUTBOX
+Resource1=IDR_MAINFRAME
 Class5=CAboutDlg
-Resource2=IDD_DIALOG1
+Resource2=IDD_ABOUTBOX
 Class6=SetWidth
-Resource3=IDR_MAINFRAME
+Resource3=IDD_DIALOG1
 Class7=SetColor
 Resource4=IDD_SETCOLOR
 
@@ -42,7 +42,7 @@ ImplementationFile=DemoYView.cpp
 Filter=C
 BaseClass=CView
 VirtualFilter=VWC
-LastObject=ID_APP_EXIT
+LastObject=IDP_PERSPECTIVE
 
 
 [CLS:CMainFrame]
@@ -52,7 +52,7 @@ ImplementationFile=MainFrm.cpp
 Filter=T
 BaseClass=CFrameWnd
 VirtualFilter=fWC
-LastObject=ID_ALLCLEAR
+LastObject=IDP_PERSPECTIVE
 
 
 
@@ -93,7 +93,10 @@ Command14=ID_SETWIDTH
 Command15=ID_VIEW_TOOLBAR
 Command16=ID_VIEW_STATUS_BAR
 Command17=ID_APP_ABOUT
-CommandCount=17
+Command18=IDP_ISOMETRIC
+Command19=IDP_CABINET
+Command20=IDP_PERSPECTIVE
+CommandCount=20
 
 [ACL:IDR_MAINFRAME]
 Type=1

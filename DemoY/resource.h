@@ -18,6 +18,9 @@
 #define ID_CIRCLE                       32775
 #define ID_ELLIPSE                      32776
 #define ID_ALLCLEAR                     32777
+#define IDP_ISOMETRIC                   32778
+#define IDP_CABINET                     32779
+#define IDP_PERSPECTIVE                 32780
 
 // Next default values for new objects
 // 
@@ -25,7 +28,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        132
-#define _APS_NEXT_COMMAND_VALUE         32778
+#define _APS_NEXT_COMMAND_VALUE         32781
 #define _APS_NEXT_CONTROL_VALUE         1004
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

@@ -16,7 +16,7 @@
 
 //2+
 #include <afxtempl.h>
-
+#include "math.h"
 class CDemoYView : public CView
 {
 protected: // create from serialization only
@@ -56,6 +56,9 @@ public:
 
 // Implementation
 public:
+	void From3dTo2d();
+	void DrawCubic();
+	void DrawRect(CPoint P1,CPoint P2,CPoint P3,CPoint P4);
 	void ClearScreen();
 	void FILLANYTHING(UINT nFlags,CPoint point);
 	void PatternFill(CDC *pDC, int x, int y);
@@ -68,6 +71,41 @@ public:
 	//5
 	void Move(CPoint* point,int x, int y);
 	virtual ~CDemoYView();
+
+private:
+	
+	Point3D LBB3D;//LEFT BACK BOTTOM
+	CPoint	LBB2D;//PROJECTION OF LEFT BACK BOTTOM POINT IN 2D
+	Point3D LBT3D;
+	CPoint	LBT2D;
+	Point3D LFB3D;
+	CPoint	LFB2D;
+	Point3D LFT3D;
+	CPoint	LFT2D;
+	Point3D RBB3D;
+	CPoint	RBB2D;
+	Point3D RBT3D;
+	CPoint	RBT2D;
+	Point3D RFB3D;
+	CPoint	RFB2D;
+	Point3D RFT3D;
+	CPoint	RFT2D;
+	double mPM[4][4];
+	//m-proj-matri
+	bool perspectiveProjection;
+
+public:
+	void Isometric();
+	//偏移量
+	int shifting;
+	//变化程度
+	double mStep;	//平移
+	double pStep;	//比例
+	double rStep;	//旋转
+	//透视点
+	double perspectiveX;
+	double perspectiveY;
+	double perspectiveZ;
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
@@ -90,6 +128,9 @@ protected:
 	afx_msg void OnTianchong();
 	afx_msg void OnEllipse();
 	afx_msg void OnAllclear();
+	afx_msg void OnIsometric();
+	afx_msg void OnCabinet();
+	afx_msg void OnPerspective();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

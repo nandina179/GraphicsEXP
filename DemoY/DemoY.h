@@ -19,6 +19,19 @@
 // See DemoY.cpp for the implementation of this class
 //
 
+class Point3D
+{
+public:
+	double x;
+	double y;
+	double z;
+
+	Point3D();
+	Point3D(int x,int y,int z);
+	~Point3D();
+};
+
+
 class CDemoYApp : public CWinApp
 {
 public:

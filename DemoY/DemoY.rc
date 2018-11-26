@@ -145,6 +145,12 @@ BEGIN
     BEGIN
         MENUITEM "关于 DemoY(&A)...",           ID_APP_ABOUT
     END
+    POPUP "投影变换"
+    BEGIN
+        MENUITEM "等轴投影",                    IDP_ISOMETRIC
+        MENUITEM "斜二测投影",                  IDP_CABINET
+        MENUITEM "透视投影",                    IDP_PERSPECTIVE
+    END
 END
 
 

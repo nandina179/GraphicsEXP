@@ -13,6 +13,7 @@
 //4
 #include "SetColor.h"
 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -38,6 +39,9 @@ BEGIN_MESSAGE_MAP(CDemoYView, CView)
 	ON_COMMAND(ID_TIANCHONG, OnTianchong)
 	ON_COMMAND(ID_ELLIPSE, OnEllipse)
 	ON_COMMAND(ID_ALLCLEAR, OnAllclear)
+	ON_COMMAND(IDP_ISOMETRIC, OnIsometric)
+	ON_COMMAND(IDP_CABINET, OnCabinet)
+	ON_COMMAND(IDP_PERSPECTIVE, OnPerspective)
 	//}}AFX_MSG_MAP
 	// Standard printing commands
 	ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
@@ -57,10 +61,29 @@ CDemoYView::CDemoYView()
 	//2+
 	//程序初始状态不绘制任何图元
 	type = 0;
-	
+	//type=6;
 	//4+
 	r=0;g=0;b=0;
+	//exp003
+	LBB3D = Point3D(-100, -100, -100);
+	LBT3D = Point3D(-100, -100, +100);
+	LFB3D = Point3D(-100, +100, -100);
+	LFT3D = Point3D(-100, +100, +100);
+	RBB3D = Point3D(+100, -100, -100);
+	RBT3D = Point3D(+100, -100, +100);
+	RFB3D = Point3D(+100, +100, -100);
+	RFT3D = Point3D(+100, +100, +100);
 
+	//
+	perspectiveProjection = false;
+	perspectiveX = 400;
+	perspectiveY = 400;
+	perspectiveZ = 300;
+	shifting = 400;
+	mStep = 1.5;
+	pStep = 1;
+	rStep = 0.05;
+	//axes = 1;
 }
 
 CDemoYView::~CDemoYView()
@@ -251,7 +274,7 @@ void CDemoYView::OnLButtonDown(UINT nFlags, CPoint point)
 	*/
 
 	//2
-	if (type ==1 || type == 2||type==3||type==4||type==5){
+	if (type ==1 || type == 2||type==3||type==4||type==5||type==6){
 		this->SetCapture();//捕捉鼠标
 		//设置开始点和终止点，此时为同一点
 		m_StartPoint = point;
@@ -314,6 +337,27 @@ void CDemoYView::OnMouseMove(UINT nFlags, CPoint point)
 		//保存新的直线段终点
 		m_EndPoint = point;
 	}
+	else if (type==6)
+	{
+		CDC*pDC=this->GetDC();
+		//pDC->SetROP2(R2_NOT);
+		//Isometric();
+		//ClearScreen();
+	}
+	else if (type==7)
+	{
+		CDC*pDC=this->GetDC();
+		//pDC->SetROP2(R2_NOT);
+		//Isometric();
+		//ClearScreen();
+	}
+	else if (type==8)
+	{
+		CDC*pDC=this->GetDC();
+		//pDC->SetROP2(R2_NOT);
+		//Isometric();
+		//ClearScreen();
+	}
 	else if (type==0&&m_LButtonDown)
 	{
 			CDC*pDC=this->GetDC();
@@ -337,7 +381,7 @@ void CDemoYView::OnLButtonUp(UINT nFlags, CPoint point)
 		CDC* dc = this->GetDC();
 		DDALine(dc,m_StartPoint.x,m_StartPoint.y,m_EndPoint.x,m_EndPoint.y,RGB(r,g,b));
 	}
-	else if(type==3||type==4||type==0)
+	else if(type==3||type==4||type==0||type==6||type==7||type==8)
 	{
 		ReleaseCapture();//释放鼠标
 		MapObj* obj = new MapObj();
@@ -848,3 +892,186 @@ void CDemoYView::ClearScreen()
 }
 
 
+
+void CDemoYView::DrawRect(CPoint P1, CPoint P2, CPoint P3, CPoint P4)
+{
+	CDC* pDC = this->GetDC();
+	COLORREF color=RGB(0,0,255);
+	//pDC->MoveTo(100,100);
+	//pDC->LineTo(200,200);
+	pDC->MoveTo(P1);
+	pDC->LineTo(P2);
+	pDC->LineTo(P3);
+	pDC->LineTo(P4);
+	pDC->LineTo(P1);
+
+}
+
+void CDemoYView::DrawCubic()
+{
+	//Draw left face
+	DrawRect(LBB2D, LBT2D, LFT2D, LFB2D);
+	//Draw right face
+	DrawRect(RBB2D, RBT2D, RFT2D, RFB2D);
+	DrawRect(LBB2D, LBT2D, RBT2D, RBB2D);
+	DrawRect(LFB2D, LFT2D, RFT2D, RFB2D);
+	DrawRect(LBB2D, LFB2D, RFB2D, RBB2D);
+	DrawRect(LBT2D, LFT2D, RFT2D, RBT2D);
+}
+
+void CDemoYView::From3dTo2d()
+{//
+	
+	double r;
+	r = LBB3D.z * mPM[3][2] + 1;
+	LBB2D.x = long((LBB3D.x * mPM[0][0] + LBB3D.y * mPM[0][1] + LBB3D.z * mPM[0][2] + mPM[0][4]) / r)+shifting;
+	LBB2D.y = long((LBB3D.x * mPM[1][0] + LBB3D.y * mPM[1][1] + LBB3D.z * mPM[1][2] + mPM[1][4]) / r)+shifting;
+	r = LBT3D.z * mPM[3][2] + 1;
+	LBT2D.x = long((LBT3D.x * mPM[0][0] + LBT3D.y * mPM[0][1] + LBT3D.z * mPM[0][2] + mPM[0][4]) / r)+shifting;
+	LBT2D.y = long((LBT3D.x * mPM[1][0] + LBT3D.y * mPM[1][1] + LBT3D.z * mPM[1][2] + mPM[1][4]) / r)+shifting;
+	r = LFB3D.z * mPM[3][2] + 1;
+	LFB2D.x = long((LFB3D.x * mPM[0][0] + LFB3D.y * mPM[0][1] + LFB3D.z * mPM[0][2] + mPM[0][4]) / r)+shifting;
+	LFB2D.y = long((LFB3D.x * mPM[1][0] + LFB3D.y * mPM[1][1] + LFB3D.z * mPM[1][2] + mPM[1][4]) / r)+shifting;
+	r = LFT3D.z * mPM[3][2] + 1;
+	LFT2D.x = long((LFT3D.x * mPM[0][0] + LFT3D.y * mPM[0][1] + LFT3D.z * mPM[0][2] + mPM[0][4]) / r)+shifting;
+	LFT2D.y = long((LFT3D.x * mPM[1][0] + LFT3D.y * mPM[1][1] + LFT3D.z * mPM[1][2] + mPM[1][4]) / r)+shifting;
+	r = RBB3D.z * mPM[3][2] + 1;
+	RBB2D.x = long((RBB3D.x * mPM[0][0] + RBB3D.y * mPM[0][1] + RBB3D.z * mPM[0][2] + mPM[0][4]) / r)+shifting;
+	RBB2D.y = long((RBB3D.x * mPM[1][0] + RBB3D.y * mPM[1][1] + RBB3D.z * mPM[1][2] + mPM[1][4]) / r)+shifting;
+	r = RBT3D.z * mPM[3][2] + 1;
+	RBT2D.x = long((RBT3D.x * mPM[0][0] + RBT3D.y * mPM[0][1] + RBT3D.z * mPM[0][2] + mPM[0][4]) / r)+shifting;
+	RBT2D.y = long((RBT3D.x * mPM[1][0] + RBT3D.y * mPM[1][1] + RBT3D.z * mPM[1][2] + mPM[1][4]) / r)+shifting;
+	r = RFB3D.z * mPM[3][2] + 1;
+	RFB2D.x = long((RFB3D.x * mPM[0][0] + RFB3D.y * mPM[0][1] + RFB3D.z * mPM[0][2] + mPM[0][4]) / r)+shifting;
+	RFB2D.y = long((RFB3D.x * mPM[1][0] + RFB3D.y * mPM[1][1] + RFB3D.z * mPM[1][2] + mPM[1][4]) / r)+shifting;
+	r = RFT3D.z * mPM[3][2] + 1;
+	RFT2D.x = long((RFT3D.x * mPM[0][0] + RFT3D.y * mPM[0][1] + RFT3D.z * mPM[0][2] + mPM[0][4]) / r)+shifting;
+	RFT2D.y = long((RFT3D.x * mPM[1][0] + RFT3D.y * mPM[1][1] + RFT3D.z * mPM[1][2] + mPM[1][4]) / r)+shifting;
+	
+	/*
+	LBB2D.x = LBB3D.x * mPM[0][0] + LBB3D.y * mPM[0][1] + LBB3D.z * mPM[0][2] + mPM[0][4];
+	LBB2D.y = LBB3D.x * mPM[1][0] + LBB3D.y * mPM[1][1] + LBB3D.z * mPM[1][2] + mPM[1][4];
+	LBT2D.x = LBT3D.x * mPM[0][0] + LBT3D.y * mPM[0][1] + LBT3D.z * mPM[0][2] + mPM[0][4];
+	LBT2D.y = LBT3D.x * mPM[1][0] + LBT3D.y * mPM[1][1] + LBT3D.z * mPM[1][2] + mPM[1][4];
+	LFT2D.x = LFT3D.x * mPM[0][0] + LFT3D.y * mPM[0][1] + LFT3D.z * mPM[0][2] + mPM[0][4];
+	LFT2D.y = LFT3D.x * mPM[1][0] + LFT3D.y * mPM[1][1] + LFT3D.z * mPM[1][2] + mPM[1][4];
+	RBB2D.x = RBB3D.x * mPM[0][0] + RBB3D.y * mPM[0][1] + RBB3D.z * mPM[0][2] + mPM[0][4];
+	RBB2D.y = RBB3D.x * mPM[1][0] + RBB3D.y * mPM[1][1] + RBB3D.z * mPM[1][2] + mPM[1][4];
+	RBT2D.x = RBT3D.x * mPM[0][0] + RBT3D.y * mPM[0][1] + RBT3D.z * mPM[0][2] + mPM[0][4];
+	RBT2D.y = RBT3D.x * mPM[1][0] + RBT3D.y * mPM[1][1] + RBT3D.z * mPM[1][2] + mPM[1][4];
+	RFB2D.x = RFB3D.x * mPM[0][0] + RFB3D.y * mPM[0][1] + RFB3D.z * mPM[0][2] + mPM[0][4];
+	RFB2D.y = RFB3D.x * mPM[1][0] + RFB3D.y * mPM[1][1] + RFB3D.z * mPM[1][2] + mPM[1][4];
+	RFT2D.x = RFT3D.x * mPM[0][0] + RFT3D.y * mPM[0][1] + RFT3D.z * mPM[0][2] + mPM[0][4];
+	RFT2D.y = RFT3D.x * mPM[1][0] + RFT3D.y * mPM[1][1] + RFT3D.z * mPM[1][2] + mPM[1][4];
+	*/
+}
+
+void CDemoYView::OnIsometric() 
+{
+	// TODO: Add your command handler code here
+	type=6;
+	
+	perspectiveProjection = false;
+	mPM[0][0] = 0.70710678118655;
+	mPM[0][1] = 0.70710678118655;;
+	mPM[0][2] = 0;
+	mPM[0][3] = 0;
+	mPM[1][0] = -0.40824829046386;
+	mPM[1][1] = 0.40824829046386;
+	mPM[1][2] = 0.81648658092773;
+	mPM[1][3] = 0;	
+	mPM[2][0] = 0;
+	mPM[2][1] = 0;
+	mPM[2][2] = 0;
+	mPM[2][3] = 0;	
+	mPM[3][0] = 0;
+	mPM[3][1] = 0;
+	mPM[3][2] = 0;
+	mPM[3][3] = 1;
+	From3dTo2d();
+	DrawCubic();
+	
+}
+
+void CDemoYView::OnCabinet() 
+{
+	// TODO: Add your command handler code here
+	//OnExp3();
+	type = 7;
+	perspectiveProjection = false;
+
+	double L = 1;
+	double Alpha = 45;
+	Alpha *= 3.1415926 / 180;
+	double c = cos(Alpha);
+	double s = sin(Alpha);
+
+	mPM[0][0] = 1;
+	mPM[0][1] = 0;
+	mPM[0][2] = L*c;
+	mPM[0][3] = 0;
+	mPM[1][0] = 0;
+	mPM[1][1] = 1;
+	mPM[1][2] = L*s;
+	mPM[1][3] = 0;	
+	mPM[2][0] = 0;
+	mPM[2][1] = 0;
+	mPM[2][2] = 0;
+	mPM[2][3] = 0;	
+	mPM[3][0] = 0;
+	mPM[3][1] = 0;
+	mPM[3][2] = 0;
+	mPM[3][3] = 1;
+	From3dTo2d();
+	DrawCubic();
+}
+
+void CDemoYView::OnPerspective() 
+{
+	// TODO: Add your command handler code here
+	type = 8;
+	perspectiveProjection = true;
+
+	mPM[0][0] = 1;
+	mPM[0][1] = 0;
+	mPM[0][2] = perspectiveX / (-perspectiveZ);
+	mPM[0][3] = 0;
+	mPM[1][0] = 0;
+	mPM[1][1] = 1;
+	mPM[1][2] = perspectiveY / (-perspectiveZ);
+	mPM[1][3] = 0;
+	mPM[2][0] = 0;
+	mPM[2][1] = 0;
+	mPM[2][2] = 0;
+	mPM[2][3] = 0;
+	mPM[3][0] = 0;
+	mPM[3][1] = 0;
+	mPM[3][2] = 1/ (-perspectiveZ);
+	mPM[3][3] = 1;
+	From3dTo2d();
+	DrawCubic();
+}
+
+void CDemoYView::Isometric()
+{
+	perspectiveProjection = false;
+	
+	mPM[0][0] = 0.70710678118655;
+	mPM[0][1] = 0.70710678118655;;
+	mPM[0][2] = 0;
+	mPM[0][3] = 0;
+	mPM[1][0] = -0.408248;
+	mPM[1][1] = 0.408248;
+	mPM[1][2] = 0.81648658092773;
+	mPM[1][3] = 0;	
+	mPM[2][0] = 0;
+	mPM[2][1] = 0;
+	mPM[2][2] = 0;
+	mPM[2][3] = 0;	
+	mPM[3][0] = 0;
+	mPM[3][1] = 0;
+	mPM[3][2] = 0;
+	mPM[3][3] = 1;
+	From3dTo2d();
+	DrawCubic();
+}
