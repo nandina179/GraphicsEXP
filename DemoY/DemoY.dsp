@@ -107,6 +107,14 @@ SOURCE=.\DemoYView.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\DialogEXP3.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DialogEXP3_2.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Graphics.cpp
 # End Source File
 # Begin Source File
@@ -149,6 +157,14 @@ SOURCE=.\DemoYDoc.h
 # Begin Source File
 
 SOURCE=.\DemoYView.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DialogEXP3.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DialogEXP3_2.h
 # End Source File
 # Begin Source File
 

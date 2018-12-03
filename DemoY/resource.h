@@ -7,10 +7,18 @@
 #define IDR_DEMOYTYPE                   129
 #define IDD_DIALOG1                     130
 #define IDD_SETCOLOR                    131
+#define IDD_DIALOG2                     132
+#define IDD_DIALOG3_2                   133
 #define IDC_EDIT1                       1000
 #define IDC_G                           1001
 #define IDC_B                           1002
 #define IDC_R                           1003
+#define IDC_X                           1007
+#define IDC_Y                           1008
+#define IDC_Z                           1009
+#define IDC_EDITY                       1012
+#define IDC_EDITZ                       1013
+#define IDC_EDITX                       1014
 #define ID_LINE                         32771
 #define ID_POLYGON                      32772
 #define ID_SETWIDTH                     32773
@@ -27,9 +35,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        132
+#define _APS_NEXT_RESOURCE_VALUE        134
 #define _APS_NEXT_COMMAND_VALUE         32781
-#define _APS_NEXT_CONTROL_VALUE         1004
+#define _APS_NEXT_CONTROL_VALUE         1015
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

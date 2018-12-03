@@ -95,6 +95,8 @@ private:
 	bool perspectiveProjection;
 
 public:
+	void RotateChange(double angle);
+	void ProportionChange(double scale);
 	void Isometric();
 	//Æ«ÒÆÁ¿
 	int shifting;
@@ -106,6 +108,8 @@ public:
 	double perspectiveX;
 	double perspectiveY;
 	double perspectiveZ;
+	//×ø±êÖá
+	int axes;
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;

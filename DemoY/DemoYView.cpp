@@ -6,6 +6,8 @@
 
 #include "DemoYDoc.h"
 #include "DemoYView.h"
+#include "DialogEXP3.h"
+#include "DialogEXP3_2.h"
 #include "math.h"
 //2
 #include "MapObj.h"
@@ -83,7 +85,7 @@ CDemoYView::CDemoYView()
 	mStep = 1.5;
 	pStep = 1;
 	rStep = 0.05;
-	//axes = 1;
+	axes = 1;
 }
 
 CDemoYView::~CDemoYView()
@@ -506,7 +508,18 @@ void CDemoYView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	
 	}
 	
-
+	else if(type==6||type==7||type==8)
+	{
+		CDialogEXP3 mdialog;
+		if (mdialog.DoModal() == IDOK)
+		{
+			axes = mdialog.isXYZ;
+		}
+		else if (mdialog.DoModal() == IDCANCEL)
+		{
+			return;
+		}
+	}
 	CView::OnLButtonDblClk(nFlags, point);
 }
 
@@ -524,8 +537,123 @@ void CDemoYView::OnSetwidth()
 
 void CDemoYView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) 
 {
+	if(type==6||type==7||type==8)
+	{
+		ClearScreen();
+		if(nChar == 'Q')
+		{
+			CDialogEXP3_2 mdialog;
+			INT_PTR nResponse = mdialog.DoModal();
+			if (nResponse == IDOK)
+			{
+				perspectiveX = mdialog.mX;
+				perspectiveY = mdialog.mY;
+				perspectiveZ = mdialog.mZ;
+
+				mPM[0][0] = 1;
+				mPM[0][1] = 0;
+				mPM[0][2] = perspectiveX / (-perspectiveZ);
+				mPM[0][3] = 0;
+				mPM[1][0] = 0;
+				mPM[1][1] = 1;
+				mPM[1][2] = perspectiveY / (-perspectiveZ);
+				mPM[1][3] = 0;
+				mPM[2][0] = 0;
+				mPM[2][1] = 0;
+				mPM[2][2] = 0;
+				mPM[2][3] = 0;
+				mPM[3][0] = 0;
+				mPM[3][1] = 0;
+				mPM[3][2] = 1 / (-perspectiveZ);
+				mPM[3][3] = 1;
+			}
+			else if (nResponse == IDCANCEL)
+			{
+				return;
+			}
+		}
+		if (nChar == VK_LEFT) {
+			LBB3D.x -= mStep;
+			LBT3D.x -= mStep;
+			LFB3D.x -= mStep;
+			LFT3D.x -= mStep;
+			RBB3D.x -= mStep;
+			RBT3D.x -= mStep;
+			RFB3D.x -= mStep;
+			RFT3D.x -= mStep;
+		}
+		if (nChar == VK_RIGHT) {
+			LBB3D.x += mStep;
+			LBT3D.x += mStep;
+			LFB3D.x += mStep;
+			LFT3D.x += mStep;
+			RBB3D.x += mStep;
+			RBT3D.x += mStep;
+			RFB3D.x += mStep;
+			RFT3D.x += mStep;
+		}
+		if (nChar == VK_UP) {
+			LBB3D.y -= mStep;
+			LBT3D.y -= mStep;
+			LFB3D.y -= mStep;
+			LFT3D.y -= mStep;
+			RBB3D.y -= mStep;
+			RBT3D.y -= mStep;
+			RFB3D.y -= mStep;
+			RFT3D.y -= mStep;
+		}
+		if (nChar == VK_DOWN) {
+			LBB3D.y += mStep;
+			LBT3D.y += mStep;
+			LFB3D.y += mStep;
+			LFT3D.y += mStep;
+			RBB3D.y += mStep;
+			RBT3D.y += mStep;
+			RFB3D.y += mStep;
+			RFT3D.y += mStep;
+		}
+		if (nChar == VK_SHIFT) {
+			LBB3D.z += mStep;
+			LBT3D.z += mStep;
+			LFB3D.z += mStep;
+			LFT3D.z += mStep;
+			RBB3D.z += mStep;
+			RBT3D.z += mStep;
+			RFB3D.z += mStep;
+			RFT3D.z += mStep;
+		}
+		if (nChar == VK_CONTROL) {
+			LBB3D.z -= mStep;
+			LBT3D.z -= mStep;
+			LFB3D.z -= mStep;
+			LFT3D.z -= mStep;
+			RBB3D.z -= mStep;
+			RBT3D.z -= mStep;
+			RFB3D.z -= mStep;
+			RFT3D.z -= mStep;
+		}
+		if (nChar == 'W') {
+			double scale = 1.1;
+			scale *= pStep;
+			ProportionChange(scale);
+		}		
+		if (nChar == 'S') {
+			double scale = 0.9;
+			scale *= pStep;
+			ProportionChange(scale);
+		}
+		if (nChar == 'A') {
+			RotateChange(-rStep);
+		}
+		if (nChar == 'D') {
+			RotateChange(rStep);
+		}
+		From3dTo2d();
+		DrawCubic();
+	}
 	// TODO: Add your message handler code here and/or call default
 	//5
+	/*
 	if (nChar == VK_LEFT){
 		for (int i=0;i<objList.GetSize();i++){
 			MapObj* obj = (MapObj*)objList.GetAt(i);
@@ -570,7 +698,7 @@ void CDemoYView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		}
 		this->Invalidate(true);
 	}
-	
+	*/
 	CView::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 
@@ -781,8 +909,51 @@ void CDemoYView::OnRButtonDblClk(UINT nFlags, CPoint point)
 		}
 	
 	}
-	
+	else if(type==6||type==7||type==8)
+	{
+		CDialogEXP3 mdialog;
+		if (mdialog.DoModal() == IDOK)
+		{
+			axes = mdialog.isXYZ;
+		}
+		else if (mdialog.DoModal() == IDCANCEL)
+		{
+			return;
+		}
+	}
+	/*else if(type==8||type==6||type==7)
+	{
+			CDialogEXP3_2 mdialog;
+			INT_PTR nResponse = mdialog.DoModal();
+			if (nResponse == IDOK)
+			{
+				perspectiveX = mdialog.mX;
+				perspectiveY = mdialog.mY;
+				perspectiveZ = mdialog.mZ;
 
+				mPM[0][0] = 1;
+				mPM[0][1] = 0;
+				mPM[0][2] = perspectiveX / (-perspectiveZ);
+				mPM[0][3] = 0;
+				mPM[1][0] = 0;
+				mPM[1][1] = 1;
+				mPM[1][2] = perspectiveY / (-perspectiveZ);
+				mPM[1][3] = 0;
+				mPM[2][0] = 0;
+				mPM[2][1] = 0;
+				mPM[2][2] = 0;
+				mPM[2][3] = 0;
+				mPM[3][0] = 0;
+				mPM[3][1] = 0;
+				mPM[3][2] = 1 / (-perspectiveZ);
+				mPM[3][3] = 1;
+			}
+			else if (nResponse == IDCANCEL)
+			{
+				return;
+			}
+	}
+*/
 	
 	CView::OnRButtonDblClk(nFlags, point);
 }
@@ -1074,4 +1245,109 @@ void CDemoYView::Isometric()
 	mPM[3][3] = 1;
 	From3dTo2d();
 	DrawCubic();
+}
+
+void CDemoYView::ProportionChange(double scale)
+{
+	LBB3D.x *= scale;
+	LBT3D.x *= scale;
+	LFB3D.x *= scale;
+	LFT3D.x *= scale;
+	RBB3D.x *= scale;
+	RBT3D.x *= scale;
+	RFB3D.x *= scale;
+	RFT3D.x *= scale;
+
+	LBB3D.y *= scale;
+	LBT3D.y *= scale;
+	LFB3D.y *= scale;
+	LFT3D.y *= scale;
+	RBB3D.y *= scale;
+	RBT3D.y *= scale;
+	RFB3D.y *= scale;
+	RFT3D.y *= scale;
+
+	LBB3D.z *= scale;
+	LBT3D.z *= scale;
+	LFB3D.z *= scale;
+	LFT3D.z *= scale;
+	RBB3D.z *= scale;
+	RBT3D.z *= scale;
+	RFB3D.z *= scale;
+	RFT3D.z *= scale;
+}
+
+void CDemoYView::RotateChange(double angle)
+{
+	double c = cos(angle);
+	double s = sin(angle);
+
+	switch (axes)
+	{
+	case 1: 
+	{
+		double y = LBB3D.y;
+		double z = LBB3D.z;
+		LBB3D.y = y * c - z * s; LBB3D.z = y * s + z * c;
+		y = LBT3D.y; z = LBT3D.z;
+		LBT3D.y = y * c - z * s; LBT3D.z = y * s + z * c;
+		y = LFB3D.y; z = LFB3D.z;
+		LFB3D.y = y * c - z * s; LFB3D.z = y * s + z * c;
+		y = LFT3D.y; z = LFT3D.z;
+		LFT3D.y = y * c - z * s; LFT3D.z = y * s + z * c;
+		y = RBB3D.y; z = RBB3D.z;
+		RBB3D.y = y * c - z * s; RBB3D.z = y * s + z * c;
+		y = RBT3D.y; z = RBT3D.z;
+		RBT3D.y = y * c - z * s; RBT3D.z = y * s + z * c;
+		y = RFB3D.y; z = RFB3D.z;
+		RFB3D.y = y * c - z * s; RFB3D.z = y * s + z * c;
+		y = RFT3D.y; z = RFT3D.z;
+		RFT3D.y = y * c - z * s; RFT3D.z = y * s + z * c;
+	}
+	break;
+	case 2: 
+	{
+		double z = LBB3D.z;
+		double x = LBB3D.x;
+		LBB3D.z = z * c - x * s; LBB3D.x = z * s + x * c;
+		z = LBT3D.z; x = LBT3D.x;
+		LBT3D.z = z * c - x * s; LBT3D.x = z * s + x * c;
+		z = LFB3D.z; x = LFB3D.x;
+		LFB3D.z = z * c - x * s; LFB3D.x = z * s + x * c;
+		z = LFT3D.z; x = LFT3D.x;
+		LFT3D.z = z * c - x * s; LFT3D.x = z * s + x * c;
+		z = RBB3D.z; x = RBB3D.x;
+		RBB3D.z = z * c - x * s; RBB3D.x = z * s + x * c;
+		z = RBT3D.z; x = RBT3D.x;
+		RBT3D.z = z * c - x * s; RBT3D.x = z * s + x * c;
+		z = RFB3D.z; x = RFB3D.x;
+		RFB3D.z = z * c - x * s; RFB3D.x = z * s + x * c;
+		z = RFT3D.z; x = RFT3D.x;
+		RFT3D.z = z * c - x * s; RFT3D.x = z * s + x * c;
+	}
+	break;
+	case 3: 
+	{
+		double x = LBB3D.x;
+		double y = LBB3D.y;
+		LBB3D.x = x * c - y * s; LBB3D.y = x * s + y * c;
+		x = LBT3D.x; y = LBT3D.y;
+		LBT3D.x = x * c - y * s; LBT3D.y = x * s + y * c;
+		x = LFB3D.x; y = LFB3D.y;
+		LFB3D.x = x * c - y * s; LFB3D.y = x * s + y * c;
+		x = LFT3D.x; y = LFT3D.y;
+		LFT3D.x = x * c - y * s; LFT3D.y = x * s + y * c;
+		x = RBB3D.x; y = RBB3D.y;
+		RBB3D.x = x * c - y * s; RBB3D.y = x * s + y * c;
+		x = RBT3D.x; y = RBT3D.y;
+		RBT3D.x = x * c - y * s; RBT3D.y = x * s + y * c;
+		x = RFB3D.x; y = RFB3D.y;
+		RFB3D.x = x * c - y * s; RFB3D.y = x * s + y * c;
+		x = RFT3D.x; y = RFT3D.y;
+		RFT3D.x = x * c - y * s; RFT3D.y = x * s + y * c;
+	}
+	break;
+	default:
+		break;
+	}
 }

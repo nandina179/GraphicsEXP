@@ -6,18 +6,37 @@
 --------------------Configuration: DemoY - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\Users\Nandina\AppData\Local\Temp\RSPAA75.tmp" with contents
+Creating command line "rc.exe /l 0x804 /fo"Debug/DemoY.res" /d "_DEBUG" /d "_AFXDLL" "\\Mac\Home\Desktop\新建文件夹\DemoY\DemoY.rc"" 
+Creating temporary file "C:\Users\Nandina\AppData\Local\Temp\RSP9454.tmp" with contents
 [
 /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /Fp"Debug/DemoY.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"\\Mac\Home\Desktop\新建文件夹\DemoY\DemoY.cpp"
+"\\Mac\Home\Desktop\新建文件夹\DemoY\DemoYDoc.cpp"
 "\\Mac\Home\Desktop\新建文件夹\DemoY\DemoYView.cpp"
+"\\Mac\Home\Desktop\新建文件夹\DemoY\DialogEXP3.cpp"
+"\\Mac\Home\Desktop\新建文件夹\DemoY\DialogEXP3_2.cpp"
+"\\Mac\Home\Desktop\新建文件夹\DemoY\Graphics.cpp"
+"\\Mac\Home\Desktop\新建文件夹\DemoY\MainFrm.cpp"
+"\\Mac\Home\Desktop\新建文件夹\DemoY\MapObj.cpp"
+"\\Mac\Home\Desktop\新建文件夹\DemoY\Point3D.cpp"
+"\\Mac\Home\Desktop\新建文件夹\DemoY\SetColor.cpp"
+"\\Mac\Home\Desktop\新建文件夹\DemoY\SetWidth.cpp"
 ]
-Creating command line "cl.exe @C:\Users\Nandina\AppData\Local\Temp\RSPAA75.tmp" 
-Creating temporary file "C:\Users\Nandina\AppData\Local\Temp\RSPAA76.tmp" with contents
+Creating command line "cl.exe @C:\Users\Nandina\AppData\Local\Temp\RSP9454.tmp" 
+Creating temporary file "C:\Users\Nandina\AppData\Local\Temp\RSP9455.tmp" with contents
+[
+/nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /Fp"Debug/DemoY.pch" /Yc"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"\\Mac\Home\Desktop\新建文件夹\DemoY\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\Users\Nandina\AppData\Local\Temp\RSP9455.tmp" 
+Creating temporary file "C:\Users\Nandina\AppData\Local\Temp\RSP9456.tmp" with contents
 [
 /nologo /subsystem:windows /incremental:yes /pdb:"Debug/DemoY.pdb" /debug /machine:I386 /out:"Debug/DemoY.exe" /pdbtype:sept 
 ".\Debug\DemoY.obj"
 ".\Debug\DemoYDoc.obj"
 ".\Debug\DemoYView.obj"
+".\Debug\DialogEXP3.obj"
+".\Debug\DialogEXP3_2.obj"
 ".\Debug\Graphics.obj"
 ".\Debug\MainFrm.obj"
 ".\Debug\MapObj.obj"
@@ -27,13 +46,28 @@ Creating temporary file "C:\Users\Nandina\AppData\Local\Temp\RSPAA76.tmp" with c
 ".\Debug\StdAfx.obj"
 ".\Debug\DemoY.res"
 ]
-Creating command line "link.exe @C:\Users\Nandina\AppData\Local\Temp\RSPAA76.tmp"
+Creating command line "link.exe @C:\Users\Nandina\AppData\Local\Temp\RSP9456.tmp"
 <h3>Output Window</h3>
+Compiling resources...
 Compiling...
+StdAfx.cpp
+Compiling...
+DemoY.cpp
+DemoYDoc.cpp
 DemoYView.cpp
-\\Mac\Home\Desktop\新建文件夹\DemoY\DemoYView.cpp(629) : warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-\\Mac\Home\Desktop\新建文件夹\DemoY\DemoYView.cpp(665) : warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-\\Mac\Home\Desktop\新建文件夹\DemoY\DemoYView.cpp(666) : warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+\\Mac\Home\Desktop\新建文件夹\DemoY\DemoYView.cpp(757) : warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+\\Mac\Home\Desktop\新建文件夹\DemoY\DemoYView.cpp(793) : warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+\\Mac\Home\Desktop\新建文件夹\DemoY\DemoYView.cpp(794) : warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+DialogEXP3.cpp
+\\Mac\Home\Desktop\新建文件夹\DemoY\DialogEXP3.cpp(24) : warning C4101: 'isXYZ' : unreferenced local variable
+DialogEXP3_2.cpp
+Graphics.cpp
+MainFrm.cpp
+MapObj.cpp
+Point3D.cpp
+SetColor.cpp
+SetWidth.cpp
+Generating Code...
 Linking...
 
 

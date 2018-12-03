@@ -2,26 +2,30 @@
 
 [General Info]
 Version=1
-LastClass=CDemoYView
+LastClass=CDialogEXP3_2
 LastTemplate=CDialog
 NewFileInclude1=#include "stdafx.h"
 NewFileInclude2=#include "DemoY.h"
 LastPage=0
 
-ClassCount=7
+ClassCount=9
 Class1=CDemoYApp
 Class2=CDemoYDoc
 Class3=CDemoYView
 Class4=CMainFrame
 
-ResourceCount=4
-Resource1=IDR_MAINFRAME
+ResourceCount=6
+Resource1=IDD_DIALOG2
 Class5=CAboutDlg
-Resource2=IDD_ABOUTBOX
+Resource2=IDD_SETCOLOR
 Class6=SetWidth
 Resource3=IDD_DIALOG1
 Class7=SetColor
-Resource4=IDD_SETCOLOR
+Resource4=IDD_ABOUTBOX
+Class8=CDialogEXP3
+Resource5=IDR_MAINFRAME
+Class9=CDialogEXP3_2
+Resource6=IDD_DIALOG3_2
 
 [CLS:CDemoYApp]
 Type=0
@@ -42,7 +46,7 @@ ImplementationFile=DemoYView.cpp
 Filter=C
 BaseClass=CView
 VirtualFilter=VWC
-LastObject=IDP_PERSPECTIVE
+LastObject=CDemoYView
 
 
 [CLS:CMainFrame]
@@ -175,4 +179,44 @@ BaseClass=CDialog
 Filter=D
 VirtualFilter=dWC
 LastObject=ID_APP_ABOUT
+
+[DLG:IDD_DIALOG2]
+Type=1
+Class=CDialogEXP3
+ControlCount=5
+Control1=IDOK,button,1342242817
+Control2=IDCANCEL,button,1342242816
+Control3=IDC_X,button,1342177289
+Control4=IDC_Y,button,1342177289
+Control5=IDC_Z,button,1342177289
+
+[CLS:CDialogEXP3]
+Type=0
+HeaderFile=DialogEXP3.h
+ImplementationFile=DialogEXP3.cpp
+BaseClass=CDialog
+Filter=D
+LastObject=CDialogEXP3
+VirtualFilter=dWC
+
+[DLG:IDD_DIALOG3_2]
+Type=1
+Class=CDialogEXP3_2
+ControlCount=8
+Control1=IDOK,button,1342242817
+Control2=IDCANCEL,button,1342242816
+Control3=IDC_EDITX,edit,1350631552
+Control4=IDC_EDITY,edit,1350631552
+Control5=IDC_EDITZ,edit,1350631552
+Control6=IDC_STATIC,static,1342308352
+Control7=IDC_STATIC,static,1342308352
+Control8=IDC_STATIC,static,1342308352
+
+[CLS:CDialogEXP3_2]
+Type=0
+HeaderFile=DialogEXP3_2.h
+ImplementationFile=DialogEXP3_2.cpp
+BaseClass=CDialog
+Filter=D
+LastObject=CDialogEXP3_2
 
