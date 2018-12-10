@@ -2,7 +2,7 @@
 
 [General Info]
 Version=1
-LastClass=CDialogEXP3_2
+LastClass=CDemoYView
 LastTemplate=CDialog
 NewFileInclude1=#include "stdafx.h"
 NewFileInclude2=#include "DemoY.h"
@@ -15,15 +15,15 @@ Class3=CDemoYView
 Class4=CMainFrame
 
 ResourceCount=6
-Resource1=IDD_DIALOG2
+Resource1=IDD_ABOUTBOX
 Class5=CAboutDlg
-Resource2=IDD_SETCOLOR
+Resource2=IDR_MAINFRAME
 Class6=SetWidth
-Resource3=IDD_DIALOG1
+Resource3=IDD_DIALOG2
 Class7=SetColor
-Resource4=IDD_ABOUTBOX
+Resource4=IDD_SETCOLOR
 Class8=CDialogEXP3
-Resource5=IDR_MAINFRAME
+Resource5=IDD_DIALOG1
 Class9=CDialogEXP3_2
 Resource6=IDD_DIALOG3_2
 
@@ -32,6 +32,7 @@ Type=0
 HeaderFile=DemoY.h
 ImplementationFile=DemoY.cpp
 Filter=N
+LastObject=CDemoYApp
 
 [CLS:CDemoYDoc]
 Type=0
@@ -56,7 +57,7 @@ ImplementationFile=MainFrm.cpp
 Filter=T
 BaseClass=CFrameWnd
 VirtualFilter=fWC
-LastObject=IDP_PERSPECTIVE
+LastObject=CUT
 
 
 
@@ -138,7 +139,8 @@ Command11=ID_CIRCLE
 Command12=ID_ELLIPSE
 Command13=ID_TIANCHONG
 Command14=ID_ALLCLEAR
-CommandCount=14
+Command15=CUT
+CommandCount=15
 
 [DLG:IDD_DIALOG1]
 Type=1

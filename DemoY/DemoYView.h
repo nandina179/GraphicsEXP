@@ -19,6 +19,7 @@
 #include "math.h"
 class CDemoYView : public CView
 {
+
 protected: // create from serialization only
 	CDemoYView();
 	DECLARE_DYNCREATE(CDemoYView)
@@ -38,6 +39,10 @@ public:
 	
 	//4+
 	int r,g,b;
+	//4caijian
+	typedef enum{
+		TC_STRAIGHTLINE_COHEN,TC_STRAIGHTLINE_MIDDLEPOINT,TC_STRAIGHTLINE_LB,TC_POLYGON,TC_NONE
+	}Type_Cut;
 
 // Operations
 public:
@@ -62,7 +67,7 @@ public:
 	void ClearScreen();
 	void FILLANYTHING(UINT nFlags,CPoint point);
 	void PatternFill(CDC *pDC, int x, int y);
-	void OnRButtonDblClk(UINT nFlags, CPoint point);
+//	void OnRButtonDblClk(UINT nFlags, CPoint point);
 	bool m_RButtonDown;
 	void Ellipse(CDC *pDC,int x1, int y1, int x2, int y2);
 	void Circle(CDC *pDC,int x1, int y1, int x2, int y2);
@@ -93,8 +98,32 @@ private:
 	double mPM[4][4];
 	//m-proj-matri
 	bool perspectiveProjection;
+public:
+	Type_Cut m_type_cut;
+	//bool m_LBDown;
+	//bool m_RBDown;
+	CPoint m_LTPoint;
+	CPoint m_RBPoint;
+	CPoint EPoint;//end point
+	CPoint BPoint;//begin point 
+	CArray<CPoint, CPoint> pointCutList;
+
+	CPoint m_Polygon[512];
+	int m_Num_Ply;
+	CPoint m_ClipedPly[512];
+	int m_NumCliped_Ply;
 
 public:
+	//void OnRButtonUp(UINT nFlags, CPoint point);
+	//void OnRButtonDown(UINT nFlags, CPoint point);
+	void DrawRect(CDC* pDC, CPoint P1, CPoint P3);
+	void CutRight();
+	void CutBottom();
+	void CutLeft();
+	void CutTop();
+	void Makecode(CPoint Point,int& Code);
+	void ShowLineSeg(CPoint BPoint,CPoint EPoint);
+	void CorrectWindow();
 	void RotateChange(double angle);
 	void ProportionChange(double scale);
 	void Isometric();
@@ -135,6 +164,10 @@ protected:
 	afx_msg void OnIsometric();
 	afx_msg void OnCabinet();
 	afx_msg void OnPerspective();
+	afx_msg void OnCUT();
+	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnRButtonDblClk(UINT nFlags, CPoint point);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

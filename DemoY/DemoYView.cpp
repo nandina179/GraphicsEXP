@@ -44,6 +44,10 @@ BEGIN_MESSAGE_MAP(CDemoYView, CView)
 	ON_COMMAND(IDP_ISOMETRIC, OnIsometric)
 	ON_COMMAND(IDP_CABINET, OnCabinet)
 	ON_COMMAND(IDP_PERSPECTIVE, OnPerspective)
+	ON_COMMAND(CUT, OnCUT)
+	ON_WM_RBUTTONUP()
+	ON_WM_RBUTTONDOWN()
+	ON_WM_RBUTTONDBLCLK()
 	//}}AFX_MSG_MAP
 	// Standard printing commands
 	ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
@@ -60,6 +64,11 @@ CDemoYView::CDemoYView()
 	//1
 	//设置鼠标左键初始没有按下
 	m_LButtonDown = false;
+	m_RButtonDown = false;
+	m_type_cut = TC_NONE;
+	m_LTPoint = m_RBPoint = CPoint(0,0);
+	m_Num_Ply = 0;
+	m_NumCliped_Ply = 0;
 	//2+
 	//程序初始状态不绘制任何图元
 	type = 0;
@@ -76,7 +85,7 @@ CDemoYView::CDemoYView()
 	RFB3D = Point3D(+100, +100, -100);
 	RFT3D = Point3D(+100, +100, +100);
 
-	//
+	///
 	perspectiveProjection = false;
 	perspectiveX = 400;
 	perspectiveY = 400;
@@ -86,6 +95,21 @@ CDemoYView::CDemoYView()
 	pStep = 1;
 	rStep = 0.05;
 	axes = 1;
+	//*
+//private:
+//		Type_Cut m_type_cut;
+//		bool m_LBDown;
+//		bool m_RBDown;
+//		CPoint m_LTPoint;
+//		CPoint m_RBPoint;
+//		CPoint m_EPoint;//end point
+//		CPoint m_BPoint;//begin point 
+
+//		CPoint m_Polygon[512];
+//		int m_Num_Ply;
+//		CPoint m_ClipedPly[512];
+//		int m_NumCliped_Ply;
+	////
 }
 
 CDemoYView::~CDemoYView()
@@ -276,7 +300,7 @@ void CDemoYView::OnLButtonDown(UINT nFlags, CPoint point)
 	*/
 
 	//2
-	if (type ==1 || type == 2||type==3||type==4||type==5||type==6){
+	if (type ==1 || type == 2||type==3||type==4||type==5||type==6||type==9){
 		this->SetCapture();//捕捉鼠标
 		//设置开始点和终止点，此时为同一点
 		m_StartPoint = point;
@@ -285,6 +309,8 @@ void CDemoYView::OnLButtonDown(UINT nFlags, CPoint point)
 		pointList.Add(point);
 		//ClearScreen();
 	}
+	
+	
 //	else if(type ==0 ){
 		/*
 		this->SetCapture();//捕捉鼠标
@@ -360,6 +386,50 @@ void CDemoYView::OnMouseMove(UINT nFlags, CPoint point)
 		//Isometric();
 		//ClearScreen();
 	}
+	else if (type==9)
+	{
+		CDC*pDC=this->GetDC();
+		pDC->SetROP2(R2_NOT);
+		if (m_RButtonDown)
+			{
+				//DrawRect(pDC,m_StartPoint,m_EndPoint);
+				//DrawRect(pDC,m_StartPoint,point);
+				DrawRect(pDC,BPoint, EPoint);
+				DrawRect(pDC, BPoint, point);
+				EPoint = point;
+				//m_LTPoint=m_StartPoint;
+				//m_RBPoint=m_EndPoint;
+				//CorrectWindow();
+			}
+		/*if(m_RButtonDown)
+		{
+		CDC* pDC = this->GetDC();//构造设备环境对象
+		//CClientDC dc(this);
+	    //CPen pen;
+    	//pen.CreatePen(PS_SOLID,1,RGB(255,0,0));
+    	//CPen *oldpen;
+	    //oldpen=pDC->SelectObject(&pen);
+        //pDC->SelectObject(&pen);
+    	pDC->SetROP2(R2_NOT);//设置绘图模式为R2_NOT
+        //pDC->Rectangle(m_StartPoint.x,m_StartPoint.y,m_EndPoint.x,m_EndPoint.y);
+        //pDC->Rectangle(m_StartPoint.x,m_StartPoint.y,point.x,point.y);
+		DrawRect(pDC,m_StartPoint,m_EndPoint);
+		DrawRect(pDC,m_StartPoint,point);
+		//pDC->SelectObject(oldpen);
+	    m_EndPoint=point;
+		m_LTPoint=m_StartPoint;
+		m_RBPoint=m_EndPoint;
+		CorrectWindow();
+		}*/
+		else if(type==9&&pointList.GetSize() != 0&&!m_RButtonDown) 
+		{
+			DDALine(pDC,m_StartPoint.x,m_StartPoint.y,m_EndPoint.x,m_EndPoint.y,RGB(0,0,0));
+			//DDALine(pDC, m_StartPoint.x, m_StartPoint.y, m_EndPoint.x, m_EndPoint.y, RGB(0, 0, 0));
+			DDALine(pDC,m_StartPoint.x,m_StartPoint.y,point.x,point.y,RGB(0,0,0));
+			//DDALine(pDC, m_StartPoint.x, m_StartPoint.y, point.x, point.y, RGB(0, 0, 0));
+			m_EndPoint = point;
+		}
+	}
 	else if (type==0&&m_LButtonDown)
 	{
 			CDC*pDC=this->GetDC();
@@ -417,29 +487,62 @@ void CDemoYView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		p2 = obj->points.GetAt(0);
 		DDALine(pDC,p1.x,p1.y,p2.x,p2.y,RGB(r,g,b));
 	}
+	else if(type==9){
+	if (!m_LButtonDown)
+		{
+			ReleaseCapture();
+			m_LButtonDown = false;
+			CDC* pDC = this->GetDC();
+			CPoint p1 = pointList.GetAt(0);
+			CPoint p2;
+			int i = 0;
+			for (i = 1; i < pointList.GetSize(); i++) {
+				p2 = pointList.GetAt(i);
+				DDALine(pDC, p1.x, p1.y, p2.x, p2.y, RGB(255, 0, 0));
+				p1 = p2;
+			}
+			p2 = pointList.GetAt(0);
+			DDALine(pDC, p1.x, p1.y, p2.x, p2.y, RGB(255, 0, 0));
+			CutTop();
+			CutLeft();
+			CutBottom();
+			CutRight();
+			p1 = pointList.GetAt(0);
+			for (i = 1; i < pointList.GetSize(); i++) {
+				p2 = pointList.GetAt(i);
+				DDALine(pDC, p1.x, p1.y, p2.x, p2.y, RGB(0, 255, 0));
+				p1 = p2;
+			}
+			p2 = pointList.GetAt(0);
+			DDALine(pDC, p1.x, p1.y, p2.x, p2.y, RGB(0, 255, 0));
+			pointList.RemoveAll();
+			pointCutList.RemoveAll();
+			ReleaseCapture();//释放鼠标
+		}
+	}
 	else if(type==5)	
 	{
 		if (!m_LButtonDown && pointList.GetSize()>0)
 		{//
-	ReleaseCapture();//释放鼠标
-		MapObj* obj = new MapObj();
-		obj->type = 5;
-		for (int i1=0;i1<pointList.GetSize();i1++)
-			obj->points.Add(pointList.GetAt(i1));
-		objList.Add(obj);
-	//	pointList.RemoveAll();
-		CDC* pDC = this->GetDC();
-		CPoint px = obj->points.GetAt(0);
-		CPoint py;
-		for (int j=1;j<obj->points.GetSize();j++){
-			py = obj->points.GetAt(j);
+			ReleaseCapture();//释放鼠标
+			MapObj* obj = new MapObj();
+			obj->type = 5;
+			for (int i1=0;i1<pointList.GetSize();i1++)
+				obj->points.Add(pointList.GetAt(i1));
+			objList.Add(obj);
+		//	pointList.RemoveAll();
+			CDC* pDC = this->GetDC();
+			CPoint px = obj->points.GetAt(0);
+			CPoint py;
+			for (int j=1;j<obj->points.GetSize();j++){
+				py = obj->points.GetAt(j);
+				DDALine(pDC,px.x,px.y,py.x,py.y,RGB(r,g,b));
+				px = py;
+			}
+			py = obj->points.GetAt(0);
 			DDALine(pDC,px.x,px.y,py.x,py.y,RGB(r,g,b));
-			px = py;
-		}
-		py = obj->points.GetAt(0);
-		DDALine(pDC,px.x,px.y,py.x,py.y,RGB(r,g,b));
-			//
-		//	CDC* pDC = this->GetDC();
+				//
+			//	CDC* pDC = this->GetDC();
 			CPoint p1,p2,p3;
 			//取矩阵最小扫描界
 			int maxX, minX, maxY, minY;
@@ -921,6 +1024,7 @@ void CDemoYView::OnRButtonDblClk(UINT nFlags, CPoint point)
 			return;
 		}
 	}
+	
 	/*else if(type==8||type==6||type==7)
 	{
 			CDialogEXP3_2 mdialog;
@@ -1068,8 +1172,8 @@ void CDemoYView::DrawRect(CPoint P1, CPoint P2, CPoint P3, CPoint P4)
 {
 	CDC* pDC = this->GetDC();
 	COLORREF color=RGB(0,0,255);
-	//pDC->MoveTo(100,100);
-	//pDC->LineTo(200,200);
+//pDC->MoveTo(100,100);
+//pDC->LineTo(200,200);
 	pDC->MoveTo(P1);
 	pDC->LineTo(P2);
 	pDC->LineTo(P3);
@@ -1351,3 +1455,277 @@ void CDemoYView::RotateChange(double angle)
 		break;
 	}
 }
+
+void CDemoYView::CorrectWindow()
+{
+	int x,y;
+	if(m_LTPoint.x > m_RBPoint.x)
+	{
+		x = m_LTPoint.x;
+		m_LTPoint.x = m_RBPoint.x;
+		m_RBPoint.x = x;
+	}
+	if(m_LTPoint.y > m_RBPoint.y)
+	{
+		y = m_LTPoint.y;
+		m_LTPoint.y = m_RBPoint.y;
+		m_RBPoint.y = y;
+	}
+}
+
+void CDemoYView::ShowLineSeg(CPoint BPoint, CPoint EPoint)
+{
+	CClientDC dc(this);
+	dc.SetROP2(R2_NOT);
+	dc.MoveTo(BPoint);
+	dc.LineTo(EPoint);
+}
+
+void CDemoYView::Makecode(CPoint Point, int &Code)
+{
+	int x = Point.x;
+	int y = Point.y;
+	Code = 0;
+	if(x < m_LTPoint.x)
+		Code = 1;
+	else if(x > m_RBPoint.x)
+		Code = 2;
+	else if(y < m_RBPoint.y)
+		Code += 4;
+	else if(y < m_LTPoint.x)
+		Code += 8;
+}
+
+void CDemoYView::OnCUT() 
+{
+	// TODO: Add your command handler code here
+	type=9;
+}
+
+void CDemoYView::CutTop()
+{
+	CPoint F, P, S, I;
+	int c1 = 0;
+	int c2 = 0;
+	int i = 0;
+	pointCutList.RemoveAll();
+	for (i = 0; i < pointList.GetSize(); i++)
+	{
+		P = pointList.GetAt(i);
+		if (i != 0)
+		{
+			c2 = (P.y < BPoint.y ? -1 : 1);
+			if (c1 + c2 == 0) {
+				I.y = BPoint.y;
+				I.x = (P.x - S.x) * (I.y - S.y) / (P.y - S.y) + S.x;
+				pointCutList.Add(I);
+			}
+		}
+		else
+		{
+			F = P;
+		}
+		S = P;
+		if (S.y < BPoint.y) 
+		{
+			c1 = -1;
+		}
+		else 
+		{
+			c1 = 1;
+			pointCutList.Add(S);
+		}
+	}
+	c2 = (F.y < BPoint.y ? -1 : 1);
+	if (c1 + c2 == 0) {
+		I.y = BPoint.y;
+		I.x = (F.x - S.x) * (I.y - S.y) / (F.y - S.y) + S.x;
+		pointCutList.Add(I);
+	}
+	pointList.RemoveAll();
+	for (i = 0; i < pointCutList.GetSize(); i++)
+	{
+		pointList.Add(pointCutList.GetAt(i));
+	}
+
+}
+
+void CDemoYView::CutLeft()
+{
+
+	CPoint F, P, S, I;
+	int c1 = 0;
+	int c2 = 0;
+	pointCutList.RemoveAll();
+	for (int i = 0; i < pointList.GetSize(); i++)
+	{
+		P = pointList.GetAt(i);
+		if (i != 0)
+		{
+			c2 = (P.x < BPoint.x ? -1 : 1);
+			if (c1 + c2 == 0) {
+				I.x = BPoint.x;
+				I.y = (P.y - S.y) * (I.x - S.x) / (P.x - S.x) + S.y;
+				pointCutList.Add(I);
+			}
+		}
+		else
+		{
+			F = P;
+		}
+		S = P;
+		if (S.x < BPoint.x)
+		{
+			c1 = -1;
+		}
+		else
+		{
+			c1 = 1;
+			pointCutList.Add(S);
+		}
+	}
+	c2 = (F.x < BPoint.x ? -1 : 1);
+	if (c1 + c2 == 0) {
+		I.x = BPoint.x;
+		I.y = (F.y - S.y) * (I.x - S.x) / (F.x - S.x) + S.y;
+		pointCutList.Add(I);
+	}
+	pointList.RemoveAll();
+	for (i = 0; i < pointCutList.GetSize(); i++)
+	{
+		pointList.Add(pointCutList.GetAt(i));
+	}
+}
+
+void CDemoYView::CutBottom()
+{
+	CPoint F, P, S, I;
+	int i = 0;
+	int c1 = 0;
+	int c2 = 0;
+	pointCutList.RemoveAll();
+	for (i = 0; i < pointList.GetSize(); i++)
+	{
+		P = pointList.GetAt(i);
+		if (i != 0)
+		{
+			c2 = (P.y > EPoint.y ? -1 : 1);
+			if (c1 + c2 == 0) {
+				I.y = EPoint.y;
+				I.x = (P.x - S.x) * (I.y - S.y) / (P.y - S.y) + S.x;
+				pointCutList.Add(I);
+			}
+		}
+		else
+		{
+			F = P;
+		}
+		S = P;
+		if (S.y > EPoint.y)
+		{
+			c1 = -1;
+		}
+		else
+		{
+			c1 = 1;
+			pointCutList.Add(S);
+		}
+	}
+	c2 = (F.y > EPoint.y ? -1 : 1);
+	if (c1 + c2 == 0) {
+		I.y = EPoint.y;
+		I.x = (F.x - S.x) * (I.y - S.y) / (F.y - S.y) + S.x;
+		pointCutList.Add(I);
+	}
+	pointList.RemoveAll();
+	for (i = 0; i < pointCutList.GetSize(); i++)
+	{
+		pointList.Add(pointCutList.GetAt(i));
+	}
+
+}
+
+void CDemoYView::CutRight()
+{
+	CPoint F, P, S, I;
+	int c1 = 0;
+	int c2 = 0;
+	int i = 0;
+	pointCutList.RemoveAll();
+	for (i = 0; i < pointList.GetSize(); i++)
+	{
+		P = pointList.GetAt(i);
+		if (i != 0)
+		{
+			c2 = (P.x > EPoint.x ? -1 : 1);
+			if (c1 + c2 == 0) {
+				I.x = EPoint.x;
+				I.y = (P.y - S.y) * (I.x - S.x) / (P.x - S.x) + S.y;
+				pointCutList.Add(I);
+			}
+		}
+		else
+		{
+			F = P;
+		}
+		S = P;
+		if (S.x > EPoint.x)
+		{
+			c1 = -1;
+		}
+		else
+		{
+			c1 = 1;
+			pointCutList.Add(S);
+		}
+	}
+	c2 = (F.x > EPoint.x ? -1 : 1);
+	if (c1 + c2 == 0) {
+		I.x = EPoint.x;
+		I.y = (F.y - S.y) * (I.x - S.x) / (F.x - S.x) + S.y;
+		pointCutList.Add(I);
+	}
+	pointList.RemoveAll();
+	for (i = 0; i < pointCutList.GetSize(); i++)
+	{
+		pointList.Add(pointCutList.GetAt(i));
+	}
+}
+
+
+
+
+void CDemoYView::DrawRect(CDC *pDC, CPoint P1, CPoint P3)
+{
+
+	DDALine(pDC, P1.x, P1.y, P1.x, P3.y, RGB(0,0,0));
+	DDALine(pDC, P1.x, P3.y, P3.x, P3.y, RGB(0,0,0));
+	DDALine(pDC, P3.x, P3.y, P3.x, P1.y, RGB(0, 0, 0));
+	DDALine(pDC, P3.x, P1.y, P1.x, P1.y, RGB(0, 0, 0));
+}
+
+void CDemoYView::OnRButtonDown(UINT nFlags, CPoint point)
+{
+	this->SetCapture();
+	BPoint=point;
+	EPoint=point;
+	m_RButtonDown=true;
+
+	CView::OnRButtonDown(nFlags, point);
+}
+
+void CDemoYView::OnRButtonUp(UINT nFlags, CPoint point)
+{
+	if(type==9)
+	{
+		ReleaseCapture();
+		m_RButtonDown = false;
+		CDC* pDC = this->GetDC();
+		DrawRect(pDC,BPoint,point);
+		//DDALine(pDC, BPoint.x, BPoint.y, point.x, point.y, RGB(0,0,0));
+	}
+	m_RButtonDown = false;
+	
+	CView::OnRButtonUp(nFlags, point);
+}
+
